@@ -368,5 +368,7 @@ Now with `#insertAfter`
 ## What is a Tree?
 
 
-What
+### Conceptual Overview
+
+A tree is a *collection* of *nodes* in which every *node* is a child of another *node* unless it is the *root* node.
 
