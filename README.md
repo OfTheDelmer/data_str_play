@@ -278,6 +278,24 @@ Hmm… That's a rough idea. Note, it doesn't mention count. Let's refine this us
 			@count += 1
 		end
 	end
+
+
+
+## Exercises/Lab for Linked Lists
+
+1.) Write a function called `last` that finds the last node in the list.
+
+2.) Write a function called `count` that gets the length of linked list. Don't use the `#count` method.
+
+3.) Write a function called `average` that sums a linked list of numbers and divides it by the length.
+
+4.) Write a function to `reverse` a linked list.
+
+5.) Write a function called `palindrome` to take a linked list of vals and returns a list  that it reads the same way forward and backwards, i.e. `palindrome (1,2,3) => (1,2,3,3,2,1)`.
+
+6.) Write a function to check if a linked list is a `palindrome`.
+
+
 	
 
 Now again with arbitrary arguments
@@ -363,6 +381,7 @@ Now with `#insertAfter`
 			end
 		end
 	end
+
 	
 	
 ## What is a Tree?
@@ -371,4 +390,43 @@ Now with `#insertAfter`
 ### Conceptual Overview
 
 A tree is a *collection* of *nodes* in which every *node* is a child of another *node* unless it is the *root* node.
+
+`binary_tree.rb`
+
+	class BinTree 
+		attr_accessor :root, :left, :right
+		
+		def initialize(rootVal)
+			@root = rootVal
+			@left = nil
+			@right = nil
+		end
+
+		def addLeft(rootVal)
+			@left = BinTree.new(rootVal)
+		end
+
+		def addRight(rootVal)
+			@right = BinTree.new(rootVal)
+		end
+	end
+`n_tree.rb`
+	
+	class Tree 
+		attr_accessor :root, :children
+		def initialize(rootVal)
+			@root = rootVal
+			@children = []
+		end
+		
+		def addChild(rootVal)
+			@children.push(Tree.new(rootVal))
+		end
+	end
+
+
+# Excercise/Lab
+
+1.) Find the height of a tree	
+
 
