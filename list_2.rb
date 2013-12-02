@@ -9,6 +9,10 @@ class List
 		@items = digest(args)
 	end
 
+	def insertFirst(item)
+		@items = Cons.new(item,@items)
+	end
+
 	def insertAfter(item, newItem, items=@items)
 		if(items.car == item)
 			items.cdr =  Cons.new(newItem, items.cdr)
