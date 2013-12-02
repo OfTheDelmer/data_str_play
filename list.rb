@@ -1,5 +1,5 @@
 ###
-	Head Tail list
+#	Head Tail list
 ###
 class List 
 	attr_accessor :head, :tail
