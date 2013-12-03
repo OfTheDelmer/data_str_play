@@ -1,4 +1,4 @@
-# CS WEEK: Data Strucutures
+# CS WEEK: Data Structures
 ## Intro to Linked Lists and Trees
 
 * What is Computer Science?
@@ -189,36 +189,23 @@ A linked list a *collection* of **items** where each *item* in the collection in
 ----
 Outline
 
-* Define some **node** object that stores *two* attributes
-* Define a linked list using these **node** objects
+* Use the idea of a **node** object that stores *two* attributes
+* Define a linked list using this **node** concept
 	* Should take a list of values/objects when constructed
 	* Should create a **node** for each
 		* Each **node** should store a reference to the **next node**
+    * Recursively iterate through lists
 		
 
 
 Class Discussion of Pseudocode
 
-		Node
-			def initialize(data)
-				// Set value equal to data
-				// Set next_node to nil	
-			end
-			
-			def getNext
-				// Return next_node reference
-			end
-			
-			def setNext(someNode)
-				// Set next_node equal to someNode
-			end
-		end
-		
+
 		
 		LinkedList
 			def initialize(might take someVals)
-				@head = new Node(nil)
-				@tail = @head.next_node
+				@head = nil
+				@tail = nil
 				
 				// Start process for turning
 				//	someVals into nodes, and
@@ -249,33 +236,26 @@ Hmm… That's a rough idea. Note, it doesn't mention count. Let's refine this us
 
 
 `LinkedList.rb`
-
-
-	class Node
-		attr_accessor :data, :next
-		
-		def initialize(data=nil)
-			@data = data
-		end
-	end
 	
 	# Without arbitrary args
 	class List
 		attr_accessor :head, :tail
-		attr_reader :count
 		
-		def initialize
-			@head = Node.new
-			@tail = @head.next
-			@count = 0
+		def initialize(head=nil)
+			@head = head
+			@tail = nil
 		end
 		
-		def insertFirst(val)
-			new_node = Node.new(@head)
-			new_node.next = @tail
+		def insert_first(val)
+			# Create a list with next
+			# current @head and @tail
+			new_node = List.new(@head)
+			new_node.tail = @tail
+			
+			# Update current head and
+			# tail
 			@head = val
 			@tail = new_node
-			@count += 1
 		end
 	end
 
@@ -300,31 +280,29 @@ Hmm… That's a rough idea. Note, it doesn't mention count. Let's refine this us
 
 Now again with arbitrary arguments
 
-		# Without arbitrary args
 	class List
 		attr_accessor :head, :tail
-		attr_reader :count
 		
 		def initialize(*args)
-			@head = Node.new
-			@tail = @head.next
-			@count = 0
+			@head = args.pop
+			@tail = nil
+			
 			process(args)
 		end
 		
-		def insertFirst(val)
-			new_node = Node.new(@head)
-			new_node.next = @tail 
+		def insert_first(val)
+			new_node = List.new(@head)
+			new_node.tail = @tail
+			
 			@head = val
 			@tail = new_node
-			@count += 1
-		end
-		
+		end	
+			
 	private
 		def process(args)
 			if !args.empty?
 				x = args.pop()
-				insertFirst(x)
+				insert_first(x)
 				process(args)
 			end
 		end
@@ -335,54 +313,115 @@ Now again with arbitrary arguments
 Now with `#insertAfter`
 
 
-		# Without arbitrary args
+	
 	class List
 		attr_accessor :head, :tail
-		attr_reader :count
 		
 		def initialize(*args)
-			@head = Node.new
-			@tail = @head.next
-			@count = 0
+			@head = args.pop
+			@tail = nil
+			
 			process(args)
 		end
 		
-		
-		def nodes 
-			newNode = Node.new(@head)
-			newNode.next = @tail
-			newNode
-		end
-		
-		def insertAfter(node, new_data, cur_nodes=self.nodes())
-			if(cur_nodes.data == node)
-				newNode = Node.new(new_data)
-				newNode.next = cur_nodes.next
-				cur_nodes.next = newNode
+		def insert_first(val)
+			new_node = List.new(@head)
+			new_node.tail = @tail
+			
+			@head = val
+			@tail = new_node
+		end	
+
+		def insert_after(node, new_data, cur_nodes=self)
+			if(cur_nodes.head == node)
+				new_node = List.new(new_data)
+				new_node.tail = cur_nodes.tail
+				cur_nodes.tail = new_node
 			else
-				insertAfter(node, new_data,cur_nodes.next)
+				insert_after(node, new_data, cur_nodes.tail)
 			end
 		end
 		
-		def insertFirst(val)
-			new_node = Node.new(@head)
-			new_node.next = @tail 
-			@head = val
-			@tail = new_node
-			@count += 1
-		end
-		
+			
 	private
 		def process(args)
 			if !args.empty?
 				x = args.pop()
-				insertFirst(x)
+				insert_first(x)
 				process(args)
 			end
 		end
 	end
 
 	
+Let's integrate some of the solutions to the exercises
+
+	class List
+		attr_accessor :head, :tail
+		
+		def initialize(*args)
+			@head = args.pop
+			@tail = nil
+			
+			process(args)
+		end
+		
+		def insert_first(val)
+			new_node = List.new(@head)
+			new_node.tail = @tail
+			
+			@head = val
+			@tail = new_node
+		end	
+
+		def insert_after(node, new_data, cur_nodes=self)
+			if(cur_nodes.head == node)
+				new_node = List.new(new_data)
+				new_node.tail = cur_nodes.tail
+				cur_nodes.tail = new_node
+			else
+				insert_after(node, new_data, cur_nodes.tail)
+			end
+		end
+		
+		# Find the count
+		def count
+			if @tail == nil
+				count = 1
+			else
+				count = 1 + @tail.count
+			end
+		end
+			
+		# Get the last item		
+		def last
+			if @tail == nil
+				@head
+			else 
+				@tail.last
+			end
+		end
+		
+		# Reverse
+		def reverse(new_list=List.new(@head), cur_list=@tail)
+			if cur_list == nil
+				new_list
+			else	
+				new_list.insert_first(cur_list.head)
+				reverse(new_list,cur_list.tail)
+			end
+		end
+	private
+		def process(args)
+			if !args.empty?
+				x = args.pop()
+				insert_first(x)
+				process(args)
+			end
+		end
+	end
+
+
 	
 ## What is a Tree?
 
@@ -425,8 +464,13 @@ A tree is a *collection* of *nodes* in which every *node* is a child of another 
 	end
 
 
-# Excercise/Lab
+## Excercise/Lab
 
-1.) Find the height of a tree	
+
+1.) Find the number of nodes in a tree
+
+2.) Print all the values in the tree
+
+3.) Find the sum of the list items
 
 

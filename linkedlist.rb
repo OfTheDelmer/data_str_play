@@ -1,51 +1,64 @@
-
-	class Node
-		attr_accessor :data, :next
-		
-		def initialize(data=nil)
-			@data = data
-		end
-	end
-	
 	class List
 		attr_accessor :head, :tail
-		attr_reader :count
 		
 		def initialize(*args)
-			@head = Node.new
-			@tail = @head.next
-			@count = 0
+			@head = args.pop
+			@tail = nil
+			
 			process(args)
 		end
 		
-		def nodes 
-			newNode = Node.new(@head)
-			newNode.next = @tail
-			newNode
-		end
-		def insertAfter(node, new_data, cur_nodes=self.nodes())
-			if(cur_nodes.data == node)
-				newNode = Node.new(new_data)
-				newNode.next = cur_nodes.next
-				cur_nodes.next = newNode
+		def insert_first(val)
+			new_node = List.new(@head)
+			new_node.tail = @tail
+			
+			@head = val
+			@tail = new_node
+		end	
+
+		def insert_after(node, new_data, cur_nodes=self)
+			if(cur_nodes.head == node)
+				new_node = List.new(new_data)
+				new_node.tail = cur_nodes.tail
+				cur_nodes.tail = new_node
 			else
-				insertAfter(node, new_data,cur_nodes.next)
+				insert_after(node, new_data, cur_nodes.tail)
 			end
 		end
 		
-		def insertFirst(val)
-			new_node = Node.new(@head)
-			new_node.next = @tail 
-			@head = val
-			@tail = new_node
-			@count += 1
+		# Find the count
+		def count
+			if @tail == nil
+				count = 1
+			else
+				count = 1 + @tail.count
+			end
 		end
-		
+			
+		# Get the last item		
+		def last
+			if @tail == nil
+				@head
+			else 
+				@tail.last
+			end
+		end
+
+		# Reverse
+		def reverse(new_list=List.new(@head), cur_list=@tail)
+			if cur_list == nil
+				new_list
+			else	
+				new_list.insert_first(cur_list.head)
+				reverse(new_list,cur_list.tail)
+			end
+		end
+
 	private
 		def process(args)
 			if !args.empty?
 				x = args.pop()
-				insertFirst(x)
+				insert_first(x)
 				process(args)
 			end
 		end
